@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            color: #333;
+        }
+
+        h1 {
+            color: #3b3b3b;
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #777;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            text-align: left;
+            font-size: 18px;
+            color: #444;
+        }
+
+        .question h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .question div {
+            margin-bottom: 15px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
+
+        .question div:hover {
+            background-color: #e0e0e0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        li {
+            background-color: #f0f0f0;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        li:hover {
+            background-color: #e0e0e0;
+        }
+
+        #result {
+            display: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .popup h2 {
+            color: #333;
+        }
+
+        .popup button {
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .popup button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to the Career Test!</h1>
+        <p>Answer the following questions to find your suggested career paths.</p>
+
+        <button id="start-btn" onclick="startTest()">Start Test</button>
+        <div id="question-container"></div>
+    </div>
+
+    <div class="popup" id="popup">
+        <h2>Your Suggested Career Paths:</h2>
+        <ul id="career-suggestions"></ul>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What type of tasks do you enjoy most?",
+                options: ["A) Working with people", "B) Working with technology", "C) Working with data", "D) Creative tasks"],
+                answers: {
+                    "A": ["Counselor", "HR Specialist", "Teacher"],
+                    "B": ["Software Developer", "Engineer", "IT Specialist"],
+                    "C": ["Data Scientist", "Statistician", "Market Analyst"],
+                    "D": ["Graphic Designer", "Artist", "Writer"]
+                }
+            },
+            {
+                question: "What environment do you thrive in?",
+                options: ["A) Fast-paced and collaborative", "B) Structured and individual", "C) Quiet and analytical", "D) Creative and flexible"],
+                answers: {
+                    "A": ["Event Manager", "Public Relations Specialist", "Team Leader"],
+                    "B": ["Project Manager", "Software Developer", "Lawyer"],
+                    "C": ["Research Scientist", "Accountant", "Financial Analyst"],
+                    "D": ["Photographer", "Artist", "Interior Designer"]
+                }
+            },
+            {
+                question: "What kind of problems do you enjoy solving?",
+                options: ["A) Helping people solve personal issues", "B) Solving technical challenges", "C) Analyzing and interpreting data", "D) Creating new and innovative solutions"],
+                answers: {
+                    "A": ["Therapist", "Social Worker", "Human Resources Specialist"],
+                    "B": ["Software Engineer", "Network Architect", "Mechanical Engineer"],
+                    "C": ["Data Analyst", "Statistician", "Market Researcher"],
+                    "D": ["Entrepreneur", "Product Designer", "Advertising Executive"]
+                }
+            },
+            {
+                question: "How do you prefer to work?",
+                options: ["A) In a team environment", "B) Alone with minimal supervision", "C) In a structured and methodical manner", "D) In a creative, flexible, and open space"],
+                answers: {
+                    "A": ["Project Manager", "Marketing Specialist", "Teacher"],
+                    "B": ["Freelancer", "Researcher", "Consultant"],
+                    "C": ["Accountant", "Engineer", "Data Analyst"],
+                    "D": ["Photographer", "Designer", "Writer"]
+                }
+            },
+            {
+                question: "What is your preferred way to learn new skills?",
+                options: ["A) Through hands-on experience", "B) Through theoretical learning and study", "C) Through trial and error", "D) Through structured courses and lectures"],
+                answers: {
+                    "A": ["Artist", "Chef", "Mechanic"],
+                    "B": ["Software Developer", "Scientist", "Engineer"],
+                    "C": ["Entrepreneur", "Startup Founder", "Inventor"],
+                    "D": ["University Professor", "Researcher", "Consultant"]
+                }
+            },
+            {
+                question: "Which of these do you value most in a career?",
+                options: ["A) Helping others and making a difference", "B) Innovation and technological advancement", "C) Financial security and stability", "D) Creativity and artistic expression"],
+                answers: {
+                    "A": ["Doctor", "Social Worker", "Counselor"],
+                    "B": ["Software Engineer", "Technologist", "Inventor"],
+                    "C": ["Accountant", "Financial Planner", "Business Executive"],
+                    "D": ["Graphic Designer", "Photographer", "Writer"]
+                }
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+
+        function startTest() {
+            document.getElementById('start-btn').style.display = 'none';
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const questionContainer = document.getElementById('question-container');
+            questionContainer.innerHTML = '';
+
+            if (currentQuestion >= questions.length) {
+                showResults();
+                return;
+            }
+
+            const question = questions[currentQuestion];
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question');
+
+            const questionText = document.createElement('h3');
+            questionText.innerText = question.question;
+            questionElement.appendChild(questionText);
+
+            question.options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.innerText = option;
+                optionElement.onclick = () => handleAnswer(option.charAt(0));
+                questionElement.appendChild(optionElement);
+            });
+
+            questionContainer.appendChild(questionElement);
+        }
+
+        function handleAnswer(selectedOption) {
+            userAnswers.push(questions[currentQuestion].answers[selectedOption]);
+            currentQuestion++;
+            setTimeout(displayQuestion, 300); // Smooth transition delay
+        }
+
+        // Function to display the results
+        function showResults() {
+            const careerSuggestions = document.getElementById('career-suggestions');
+            careerSuggestions.innerHTML = ''; // Clear previous results
+
+            const careerCount = {};
+
+            // Count occurrences of each career
+            userAnswers.flat().forEach(career => {
+                careerCount[career] = (careerCount[career] || 0) + 1;
+            });
+
+            // Sort careers by frequency (in descending order)
+            const sortedCareers = Object.entries(careerCount)
+                .sort((a, b) => b[1] - a[1])  // Sort by count
+                .map(entry => entry[0]);  // Get the career name
+
+            // Display only the top 3 careers
+            const topCareers = sortedCareers.slice(0, 3);
+            topCareers.forEach(career => {
+                const li = document.createElement('li');
+                li.innerText = career;
+                careerSuggestions.appendChild(li);
+            });
+
+            // Show the popup with the career suggestions
+            document.getElementById('popup').style.display = 'block';
+        }
+        // Function to close the popup and redirect to index.html
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            window.location.href = "/";  // Redirect to the main website (Flask route)
+        }
+
+
+    </script>
+</body>
+
+</html>

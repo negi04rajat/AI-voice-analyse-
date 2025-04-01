@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grow With Us - Career & Interview Prep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(#363636, #19191a, #080808);
+            /* Soft light gray for the page background */
+            color: white;
+            /* Main text color */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            /* Blue to Purple gradient */
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 50px;
+            background: url('career-growth.jpg') no-repeat center center/cover;
+            color: rgb(250, 248, 248);
+            font-size: 24px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 0;
+        }
+
+        .section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: #292929;
+            /* Dark Gray */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+            flex-wrap: wrap;
+        }
+
+        .section img {
+            width: 45%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section .text {
+            width: 50%;
+            padding: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            /* Blue to Purple gradient */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #4c31b1;
+            /* Slightly darker gradient */
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            /* Blue to Purple gradient */
+            color: white;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background: #444;
+            /* Darker background for progress bar */
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress {
+            height: 10px;
+            background: #ff9800;
+            /* Bright color for progress */
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .testimonials {
+            background: #222;
+            /* Darker background for testimonial section */
+            padding: 40px;
+            margin: 40px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .testimonial-box {
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.2);
+            width: 30%;
+        }
+
+        .testimonial-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        .faq {
+            background: #222;
+            padding: 40px;
+            margin: 40px 0;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .faq h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #444;
+        }
+
+        .faq-question {
+            cursor: pointer;
+            padding: 15px;
+            background: #333;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #444;
+        }
+
+        .faq-answer {
+            padding: 15px;
+            background: #444;
+            border-radius: 10px;
+            display: none;
+            margin-top: 5px;
+        }
+
+        .faq-question h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #ff9800;
+        }
+
+        .faq-answer p {
+            font-size: 16px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .faq {
+                padding: 20px;
+            }
+
+            .faq h2 {
+                font-size: 28px;
+            }
+
+            .faq-item {
+                margin-bottom: 10px;
+            }
+
+            .faq-question h3 {
+                font-size: 16px;
+            }
+
+            .faq-answer p {
+                font-size: 14px;
+            }
+        }
+
+        .newsletter {
+            background: #a2d8e2;
+            /* Soft cyan color */
+            padding: 50px;
+            margin: 40px 0;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+        }
+
+        .newsletter h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .newsletter p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .newsletter input {
+            padding: 15px;
+            font-size: 16px;
+            width: 300px;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+            transition: 0.3s;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .newsletter input::placeholder {
+            color: white;
+        }
+
+        .newsletter input:hover,
+        .newsletter input:focus {
+            background-color: rgba(255, 255, 255, 0.4);
+            color: #fff;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            /* Blue to Purple gradient */
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #4c31b1;
+            /* Slightly darker gradient */
+        }
+
+        /* Style for the motivation carousel container */
+        .motivation-carousel-container {
+            width: 100%;
+            padding: 40px 0;
+            text-align: center;
+            background-color: #292929;
+            margin-top: 50px;
+            border-radius: 10px;
+        }
+
+        .motivation-carousel-container h2 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* The motivation carousel that holds the images */
+        .motivation-carousel {
+            display: flex;
+            gap: 20px;
+            /* Space between images */
+            overflow: hidden;
+            /* Hide the images that are not visible */
+            position: relative;
+        }
+
+        /* Each motivation item */
+        .motivation-item {
+            flex: 0 0 auto;
+            /* Prevent image item from growing or shrinking */
+            width: 560px;
+            /* Set the width for the image */
+            height: 315px;
+            /* Set the height for the image */
+            opacity: 0;
+            /* Initially hide the images */
+            transition: opacity 1s ease-in-out;
+            /* Fade-in effect */
+            border-radius: 10px;
+            /* Optional: rounded corners for images */
+        }
+
+        /* Motivation item that is active and shown */
+        .motivation-item.active {
+            opacity: 1;
+        }
+
+        /* Keyframes for the animation of scrolling images */
+        @keyframes motivationCarousel {
+            0% {
+                transform: translateX(0);
+                /* Starting position */
+            }
+
+            33% {
+                transform: translateX(-100%);
+                /* Move one image to the left */
+            }
+
+            66% {
+                transform: translateX(-200%);
+                /* Move two images to the left */
+            }
+
+            100% {
+                transform: translateX(0);
+                /* Loop back to starting position */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .newsletter-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .newsletter input {
+                width: 80%;
+            }
+
+            .btn {
+                width: 80%;
+            }
+        }
+
+        /* Progress Dashboard */
+        .progress-dashboard {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding: 20px;
+            background: #292929;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-item {
+            width: 30%;
+            text-align: center;
+        }
+
+        .progress-item h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background: #444;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 10px;
+            background: #ff9800;
+            width: 0%;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <h2>Grow With Us</h2>
+        <div>
+            <a href="career-test.html">Career Guidance</a>
+            <a href="record.html">Interview Prep</a>
+            <a href="tests.html">Personality Tests</a>
+        </div>
+    </div>
+    <div class="container">
+        <div id="career" class="section">
+            <div class="text">
+                <h2>Career Guidance</h2>
+                <p>Confused about your career path? Take our career test and get insights into your best career choices.
+                </p>
+                <button class="btn" id="careerTestBtn" onclick="window.location.href='career-test.html'">Take Career
+                    Test</button>
+                <div class="progress-bar">
+                    <div class="progress" id="careerProgress"></div>
+                </div>
+            </div>
+            <img src="https://i.pinimg.com/originals/d1/02/c3/d102c3dfe7399f6b0c251d030959395a.jpg"
+                alt="Career Guidance">
+        </div>
+
+        <div id="interview" class="section">
+            <img src="https://madison.co.nz/wp-content/uploads/2023/09/Madison-How-to-answer-common-job-interview-questions-Blog-header-1.jpg"
+                alt="Interview Preparation">
+            <div class="text">
+                <h2>Interview Preparation</h2>
+                <p>Practice with AI-driven interview feedback and improve your performance.</p>
+                <button class="btn" id="interviewPrepBtn" onclick="window.location.href='/prepare'">
+                    Start Interview Prep
+                </button>
+            </div>
+        </div>
+        
+
+        <div id="tests" class="section">
+            <div class="text">
+                <h2>Personality & Aptitude Tests</h2>
+                <p>Analyze your personality and aptitude to make the best career decisions.</p>
+                <button class="btn" id="personalityTestBtn" onclick="window.location.href='personality.html'">Take
+                    Personality Test</button>
+                <div class="progress-bar">
+                    <div class="progress" id="testProgress"></div>
+                </div>
+            </div>
+            <img src="https://mantracare.org/wp-content/uploads/2021/11/Personality-test-1536x768.jpg"
+                alt="Personality Test">
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="testimonials">
+        <div class="testimonial-box">
+            <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Nat Reynolds">
+            <p>"Vitae suscipit tellus mauris a diam maecenas sed enim ut. Mauris augue neque gravida in fermentum.
+                Praesent semper feugiat nibh sed pulvinar proin."</p>
+            <h3>Nat Reynolds</h3>
+            <p>Chief Accountant</p>
+        </div>
+        <div class="testimonial-box">
+            <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Celia Almeda">
+            <p>"Pharetra vel turpis nunc eget lorem. Quisque id diam vel quam elementum pulvinar etiam. Urna porttitor
+                rhoncus dolor purus non enim praesent elementum."</p>
+            <h3>Celia Almeda</h3>
+            <p>Secretary</p>
+        </div>
+        <div class="testimonial-box">
+            <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="Bob Roberts">
+            <p>"Mauris augue neque gravida in fermentum. Praesent semper feugiat nibh sed pulvinar proin. Nibh nisl
+                dictumst vestibulum rhoncus est pellentesque elit."</p>
+            <h3>Bob Roberts</h3>
+            <p>Sales Manager</p>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>How does the career test work?</h3>
+            </div>
+            <div class="faq-answer">
+                <p>The test analyzes your skills and interests to suggest careers.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>Is the interview prep personalized?</h3>
+            </div>
+            <div class="faq-answer">
+                <p>Yes, our AI-driven tool provides personalized feedback based on your responses.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>What is the cost of using this platform?</h3>
+            </div>
+            <div class="faq-answer">
+                <p>Our basic services are free, with premium features available for a subscription.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>How can I improve my chances in interviews?</h3>
+            </div>
+            <div class="faq-answer">
+                <p>Practice with our AI-driven feedback tool to refine your interview responses.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <h3>How accurate are the personality tests?</h3>
+            </div>
+            <div class="faq-answer">
+                <p>Our personality tests are based on well-researched psychological principles and offer a good
+                    understanding of your traits.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Newsletter Signup -->
+    <div class="newsletter">
+        <h2>Stay Updated</h2>
+        <p>Subscribe to our newsletter for the latest career tips and updates.</p>
+        <div class="newsletter-form">
+            <input type="email" placeholder="Enter your email" />
+            <button class="btn">Subscribe</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Grow With Us. All Rights Reserved.</p>
+    </div>
+
+    <script>
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const allAnswers = document.querySelectorAll('.faq-answer');
+
+            // Toggle visibility of the clicked answer
+            if (answer.style.display === "block") {
+                answer.style.display = "none";
+            } else {
+                answer.style.display = "block";
+            }
+
+            // Close other open answers
+            allAnswers.forEach(function (item) {
+                if (item !== answer) {
+                    item.style.display = "none";
+                }
+            });
+        }
+
+        document.getElementById("careerTestBtn").addEventListener("click", function () {
+            document.getElementById("careerProgress").style.width = "100%";
+        });
+
+        document.getElementById("personalityTestBtn").addEventListener("click", function () {
+            document.getElementById("testProgress").style.width = "100%";
+        });
+        document.getElementById("careerTestBtn").addEventListener("click", function() {
+        window.location.href = "/career-test";
+    });
+
+    document.getElementById("personalityTestBtn").addEventListener("click", function() {
+        window.location.href = "/personality";
+    });
+
+    </script>
+</body>
+
+</html>

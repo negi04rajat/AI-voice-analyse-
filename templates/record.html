@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Transcription</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #2b5876, #4e4376);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #fff;
+            font-weight: 500;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        h2 {
+            color: #fff;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="file"]:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        #recordButton,
+        #stopButton,
+        #uploadButton {
+            width: 48%;
+            display: inline-block;
+            margin: 10px 1%;
+        }
+
+        #recordButton {
+            background-color: #007bff;
+        }
+
+        #stopButton {
+            background-color: #dc3545;
+        }
+
+        #uploadButton {
+            background-color: #28a745;
+        }
+
+        #timer {
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 25px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Audio Transcription</h1>
+        <p>Upload or record audio and let us transcribe it for you.</p>
+
+        <form action="/transcribe" method="post" enctype="multipart/form-data">
+            <input type="file" name="audio" required>
+            <button type="submit">Transcribe</button>
+        </form>
+
+        <hr>
+
+        <h2>Live Recording</h2>
+        <button id="recordButton">Start Recording</button>
+        <button id="stopButton" disabled>Stop Recording</button>
+        <p id="timer">Recording Time: 0s</p>
+        <audio id="audioPlayback" controls></audio>
+        <button id="uploadButton" disabled>Upload & Transcribe</button>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordingTime = 0;
+        let timerInterval;
+
+        function startTimer() {
+            recordingTime = 0;
+            document.getElementById("timer").textContent = "Recording Time: 0s";
+            timerInterval = setInterval(() => {
+                recordingTime++;
+                document.getElementById("timer").textContent = `Recording Time: ${recordingTime}s`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        document.getElementById("recordButton").addEventListener("click", async () => {
+            audioChunks = [];
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+
+            document.getElementById("recordButton").disabled = true;
+            document.getElementById("stopButton").disabled = false;
+            startTimer();
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+        });
+
+        document.getElementById("stopButton").addEventListener("click", () => {
+            mediaRecorder.stop();
+            stopTimer();
+            document.getElementById("recordButton").disabled = false;
+            document.getElementById("stopButton").disabled = true;
+            document.getElementById("uploadButton").disabled = false;
+
+            mediaRecorder.onstop = () => {
+                if (audioChunks.length === 0) return;
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                document.getElementById("audioPlayback").src = audioUrl;
+            };
+        });
+
+        document.getElementById("uploadButton").addEventListener("click", () => {
+            if (audioChunks.length === 0) {
+                alert("No audio recorded!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("audio", new Blob(audioChunks, { type: 'audio/wav' }), "recorded_audio.wav");
+
+            fetch("/record", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => alert("Transcription: " + data.transcription))
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+
+</html>
