@@ -4,65 +4,236 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transcription Result</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9fb;
+            color: #333;
+            line-height: 1.6;
+            padding: 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
         .container {
-            width: 50%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 950px;
+            padding: 30px;
+            overflow: hidden;
         }
         h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 25px;
             color: #333;
         }
-        p {
-            font-size: 18px;
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-top: 30px;
+            margin-bottom: 15px;
             color: #444;
-            background: #eef;
-            padding: 10px;
-            border-radius: 5px;
+        }
+        .analysis-box {
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+        .emotion-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            margin-top: 15px;
+        }
+        .emotion {
+            background-color: #e1f7ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #006db3;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-size: 1rem;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            background-color: #f7f7f7;
+            margin-top: 20px;
+            resize: vertical;
         }
         button {
             background-color: #007bff;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 28px;
+            border-radius: 50px;
             border: none;
-            border-radius: 5px;
+            font-size: 1rem;
             cursor: pointer;
-            font-size: 16px;
-            margin: 10px;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
         }
         button:hover {
             background-color: #0056b3;
         }
         a {
             display: inline-block;
-            margin-top: 10px;
-            text-decoration: none;
+            margin-top: 25px;
+            font-size: 1rem;
             color: #007bff;
-            font-weight: bold;
+            font-weight: 600;
+            text-decoration: none;
         }
         a:hover {
             color: #0056b3;
+        }
+        .speaker-line {
+            margin-bottom: 8px;
+        }
+        .speaker-name {
+            font-weight: bold;
+            color: #444;
+        }
+        canvas {
+            max-width: 100%;
+            height: 300px !important;  /* Make the graph smaller */
+            margin: 0 auto;
+        }
+        .small-text {
+            font-size: 0.9rem;
+            color: #777;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Transcription Result</h1>
-        <p>{{ transcription }}</p>
+
+        <!-- Speaker-wise Transcript -->
+        <h2>Transcript (Speaker-wise)</h2>
+        <div class="analysis-box" style="max-height: 300px; overflow-y: auto;">
+            {% for segment in speaker_segments %}
+                <p class="speaker-line"><span class="speaker-name">{{ segment.speaker }}:</span> {{ segment.text }}</p>
+            {% endfor %}
+        </div>
+
+        <!-- Emotion Analysis -->
+        <h2>Emotion Analysis</h2>
+        <div class="analysis-box">
+            <canvas id="emotionChart"></canvas>
+            <p class="small-text">The graph represents the emotion intensity detected during the conversation.</p>
+        </div>
+
+        <!-- Pacing Analysis -->
+        <h2>Pacing & Readability</h2>
+        <div class="analysis-box">
+            <p><strong>Transcript WPM:</strong> {{ transcript_wpm }}</p>
+            <p><strong>Expected WPM:</strong> 130 (this is the average expected WPM for a natural conversation or interview)</p>
+            <p><strong>Pacing Category:</strong> {{ pacing_results.pacing_category }}</p>
+            <canvas id="pacingChart"></canvas>
+            <p class="small-text">The pacing analysis compares the current WPM with the expected conversational speed.</p>
+        </div>
+
+        <!-- Grammar Feedback and Confidence -->
+        <h2>Grammar Feedback & Confidence</h2>
+        <div class="analysis-box">
+            <p><strong>Grammar Feedback:</strong></p>
+            <p>{{ grammar_feedback }}</p>
+            <p><strong>Confidence Score:</strong> {{ confidence_score }}%</p>
+        </div>
+
+        <!-- Interview Summary -->
+        <h2>Interview Summary</h2>
+        <div class="analysis-box">
+            <p>{{ summary }}</p>
+        </div>
+
+        <!-- Full Transcript Textarea -->
+        <h2>Full Transcript</h2>
         <form action="/download" method="post">
-            <input type="hidden" name="text" value="{{ transcription }}">
+            <textarea name="text" readonly>{{ transcription }}</textarea>
             <button type="submit">Download as Text File</button>
         </form>
-        <a href="/">Go Back</a>
+
+        <a href="/">← Go Back</a>
     </div>
+
+    <script>
+        // Emotion Analysis Chart
+        const emotionData = {
+            labels: {{ emotion_keys | tojson }},
+            datasets: [{
+                label: 'Emotion Scores',
+                data: {{ emotion_values | tojson }},
+                backgroundColor: ['#FF5733', '#C70039', '#900C3F', '#581845', '#FF0000', '#DAF7A6', '#FFC300', '#FF5733', '#C70039'],
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        };
+        new Chart(document.getElementById('emotionChart'), {
+            type: 'bar',
+            data: emotionData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        enabled: true
+                    }
+                }
+            }
+        });
+
+        // Pacing Analysis Chart
+        const pacingData = {
+            labels: ['Words per Minute (WPM)', 'Expected WPM'],
+            datasets: [{
+                label: 'Pacing Comparison',
+                data: [{{ pacing_results.words_per_minute }}, 130],  // Expected WPM for a natural conversation
+                backgroundColor: ['#0066cc', '#cccccc'],
+                borderColor: ['#003366', '#999999'],
+                borderWidth: 1
+            }]
+        };
+        new Chart(document.getElementById('pacingChart'), {
+            type: 'bar',
+            data: pacingData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        enabled: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

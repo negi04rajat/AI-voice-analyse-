@@ -177,7 +177,7 @@
             document.getElementById("recordButton").disabled = false;
             document.getElementById("stopButton").disabled = true;
             document.getElementById("uploadButton").disabled = false;
-
+            
             mediaRecorder.onstop = () => {
                 if (audioChunks.length === 0) return;
                 const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
