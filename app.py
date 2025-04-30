@@ -8,7 +8,7 @@ import textstat
 from transformers import pipeline
 import whisperx
 import torch
-import google.generativeai as genai  # <-- Added Gemini import
+import google.generativeai as genai  # Gemini import
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -29,11 +29,15 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model = whisperx.load_model("tiny", device, compute_type="float32")
 
 # Load Emotion Classifier
-emotion_classifier = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
+emotion_classifier = pipeline(
+    "text-classification",
+    model="j-hartmann/emotion-english-distilroberta-base",
+    return_all_scores=True
+)
 
 # Configure Gemini API
-genai.configure(api_key="Add your API Key here")  # <-- Add your API Key here
-gemini_model = genai.GenerativeModel('gemini-pro')
+genai.configure(api_key="")  # <-- Put your API key here
+gemini_model = genai.GenerativeModel('models/gemini-1.5-flash')
 
 # Pacing thresholds
 SLOW_THRESHOLD = 100
@@ -90,35 +94,34 @@ def analyze_pacing(transcript, duration_minutes=1):
     pacing_category = "slow" if wpm < SLOW_THRESHOLD else "fast" if wpm > FAST_THRESHOLD else "normal"
     return {
         "words_per_minute": round(wpm, 5),
-        "transcript_wpm": round(len(words) / duration_minutes, 5),  # Added transcript WPM
+        "transcript_wpm": round(len(words) / duration_minutes, 5),
         "pacing_category": pacing_category,
         "readability": round(textstat.flesch_reading_ease(transcript), 5),
         "flesch_kincaid_grade": round(textstat.flesch_kincaid_grade(transcript), 5),
         "gunning_fog_index": round(textstat.gunning_fog(transcript), 5)
     }
 
-# New function to analyze grammar and confidence
 def analyze_grammar_confidence(transcript):
     if not transcript.strip():
         return {"grammar_feedback": "No transcript found.", "confidence": 0.0}
     
-    prompt = f"""Assume you are a professional English teacher and interviewer. try to ignore the transcipt error
+    prompt = f"""Assume you are a professional English teacher and interviewer. Try to ignore transcription errors.
     1. Check grammar mistakes in the following text.
     2. Tell if the answers are correct and meaningful (yes/no).
     3. Give an improvement suggestion.
     4. Give a confidence score between 0 and 1 for how correct the overall text is.
-    5. Give area of improvements and skills suggetions.
+    5. Give area of improvements and skills suggestions.
 
     Text: {transcript}
     """
 
     try:
-        response = gemini_model.generate_content(prompt)
-        output = response.text
+        response = gemini_model.generate_content([prompt])
+        output = response.candidates[0].content.parts[0].text
 
         return {
             "grammar_feedback": output,
-            "confidence": 0.85  # You can adjust or extract real confidence value from output if needed
+            "confidence": 0.85  # Static for now, or you can parse from output
         }
     except Exception as e:
         return {"grammar_feedback": f"Error: {str(e)}", "confidence": 0.0}
@@ -163,11 +166,9 @@ def transcribe_audio():
         if os.path.getsize(filepath) == 0:
             raise Exception("Uploaded file is empty")
 
-        # Transcription only (no alignment or diarization)
         audio = whisperx.load_audio(filepath)
         result = model.transcribe(audio, batch_size=16)
 
-        # Format transcript
         transcript = ""
         speaker_segments = []
         for seg in result["segments"]:
@@ -182,7 +183,6 @@ def transcribe_audio():
 
         summary = "This interview analysis reflects the overall tone and pacing of the speaker."
 
-        # Convert emotion result into serializable format (list of keys and values)
         emotion_keys = list(emotion_result.keys())
         emotion_values = list(emotion_result.values())
 
