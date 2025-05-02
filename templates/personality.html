@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            color: #333;
+        }
+
+        h1 {
+            color: #3b3b3b;
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #777;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            text-align: left;
+            font-size: 18px;
+            color: #444;
+        }
+
+        .question h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .question div {
+            margin-bottom: 15px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
+
+        .question div:hover {
+            background-color: #e0e0e0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        li {
+            background-color: #f0f0f0;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        li:hover {
+            background-color: #e0e0e0;
+        }
+
+        #result {
+            display: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .popup h2 {
+            color: #333;
+        }
+
+        .popup button {
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .popup button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to the Personality Test!</h1>
+        <p>Answer the following questions to find your personality profile.</p>
+        <button id="start-btn" onclick="startTest()">Start Test</button>
+        <div id="question-container"></div>
+    </div>
+
+    <div class="popup" id="popup">
+        <h2>Your Personality Traits:</h2>
+        <ul id="personality-suggestions"></ul>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        const questionPool = [
+            {
+                question: "How do you typically react to new social situations?",
+                options: ["A) I love meeting new people", "B) I prefer to observe first", "C) I get nervous", "D) I'm excited but cautious"],
+                answers: {
+                    "A": ["Extrovert"],
+                    "B": ["Observer"],
+                    "C": ["Introvert"],
+                    "D": ["Ambivert"]
+                }
+            },
+            {
+                question: "What describes your decision-making style?",
+                options: ["A) Based on feelings", "B) Based on logic", "C) Based on gut instinct", "D) Based on what others advise"],
+                answers: {
+                    "A": ["Empath"],
+                    "B": ["Thinker"],
+                    "C": ["Intuitive"],
+                    "D": ["Support-Seeker"]
+                }
+            },
+            {
+                question: "How do you handle stress?",
+                options: ["A) I talk it out", "B) I plan my way through", "C) I isolate myself", "D) I distract myself with creativity"],
+                answers: {
+                    "A": ["Expressive"],
+                    "B": ["Strategist"],
+                    "C": ["Reserved"],
+                    "D": ["Creative"]
+                }
+            },
+            {
+                question: "Which activity sounds most appealing?",
+                options: ["A) Leading a team", "B) Analyzing a puzzle", "C) Writing a story", "D) Meditating alone"],
+                answers: {
+                    "A": ["Leader"],
+                    "B": ["Analytical"],
+                    "C": ["Creative"],
+                    "D": ["Reflective"]
+                }
+            },
+            {
+                question: "What do friends value most in you?",
+                options: ["A) Loyalty", "B) Intelligence", "C) Humor", "D) Empathy"],
+                answers: {
+                    "A": ["Reliable"],
+                    "B": ["Logical"],
+                    "C": ["Fun-loving"],
+                    "D": ["Compassionate"]
+                }
+            },
+            {
+                question: "Which best describes your energy level?",
+                options: ["A) Always high", "B) Depends on the task", "C) Low-key but focused", "D) Steady"],
+                answers: {
+                    "A": ["Energetic"],
+                    "B": ["Adaptive"],
+                    "C": ["Calm"],
+                    "D": ["Consistent"]
+                }
+            },
+            {
+                question: "What motivates you the most?",
+                options: ["A) Recognition", "B) Solving problems", "C) Helping others", "D) Creating something new"],
+                answers: {
+                    "A": ["Achiever"],
+                    "B": ["Problem-Solver"],
+                    "C": ["Caregiver"],
+                    "D": ["Innovator"]
+                }
+            },
+            {
+                question: "Which best describes your ideal weekend?",
+                options: ["A) Party or group hangout", "B) Solving puzzles or reading", "C) Quiet time or journaling", "D) Trying something artsy"],
+                answers: {
+                    "A": ["Extrovert"],
+                    "B": ["Thinker"],
+                    "C": ["Introvert"],
+                    "D": ["Creative"]
+                }
+            }
+        ];
+
+        let selectedQuestions = [];
+        let currentQuestion = 0;
+        let userAnswers = [];
+
+        function startTest() {
+            document.getElementById('start-btn').style.display = 'none';
+            selectedQuestions = shuffleArray(questionPool).slice(0, 5); // pick 5 random questions
+            displayQuestion();
+        }
+
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function displayQuestion() {
+            const questionContainer = document.getElementById('question-container');
+            questionContainer.innerHTML = '';
+
+            if (currentQuestion >= selectedQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const question = selectedQuestions[currentQuestion];
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question');
+
+            const questionText = document.createElement('h3');
+            questionText.innerText = question.question;
+            questionElement.appendChild(questionText);
+
+            question.options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.innerText = option;
+                optionElement.onclick = () => handleAnswer(option.charAt(0));
+                questionElement.appendChild(optionElement);
+            });
+
+            questionContainer.appendChild(questionElement);
+        }
+
+        function handleAnswer(selectedOption) {
+            userAnswers.push(selectedQuestions[currentQuestion].answers[selectedOption]);
+            currentQuestion++;
+            setTimeout(displayQuestion, 300); // smooth transition
+        }
+
+        function showResults() {
+            const personalitySuggestions = document.getElementById('personality-suggestions');
+            personalitySuggestions.innerHTML = '';
+
+            const traitCount = {};
+            userAnswers.flat().forEach(trait => {
+                traitCount[trait] = (traitCount[trait] || 0) + 1;
+            });
+
+            const sortedTraits = Object.entries(traitCount)
+                .sort((a, b) => b[1] - a[1])
+                .map(entry => entry[0]);
+
+            const topTraits = sortedTraits.slice(0, 3);
+            topTraits.forEach(trait => {
+                const li = document.createElement('li');
+                li.innerText = trait;
+                personalitySuggestions.appendChild(li);
+            });
+
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            window.location.href = "/";
+        }
+    </script>
+</body>
+
+</html>
