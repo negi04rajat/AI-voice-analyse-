@@ -105,12 +105,14 @@ def analyze_grammar_confidence(transcript):
     if not transcript.strip():
         return {"grammar_feedback": "No transcript found.", "confidence": 0.0}
     
-    prompt = f"""Assume you are a professional English teacher and interviewer. Try to ignore transcription errors.
-    1. Check grammar mistakes in the following text.
-    2. Tell if the answers are correct and meaningful (yes/no).
-    3. Give an improvement suggestion.
-    4. Give a confidence score between 0 and 1 for how correct the overall text is.
-    5. Give area of improvements and skills suggestions.
+    prompt = f"""You are a professional English language evaluator and interview coach. Analyze the following interview transcript based on the following five categories. Be clear, concise, and constructive in your feedback.
+Format your response with proper headers and bullet points for readability.
+Analyze:
+1. Grammar Issues – Identify major grammar problems (e.g., tense usage, redundancy, fragments, etc.).
+2. Answer Clarity – Are the responses understandable and meaningful? (Yes/No) Explain briefly.
+3. Suggestions for Improvement – How can the candidate improve grammar, clarity, and expression?
+4. Confidence Score – Give a confidence score between 0% to 100% for the transcript's overall quality.
+5. Areas for Improvement – Mention specific skills or habits the candidate should work on.
 
     Text: {transcript}
     """
